@@ -9,8 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "bootstrap": "^5.3.8",
     "next": "16.1.6",
     "react": "19.2.3",
+    "react-bootstrap": "^2.10.10",
+    "react-bootstrap-icons": "^1.11.6",
     "react-dom": "19.2.3"
   },
   "devDependencies": {
