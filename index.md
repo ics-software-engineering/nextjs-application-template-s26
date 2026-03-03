@@ -72,7 +72,7 @@ Then seed the database with the `/config/settings.development.json` data using `
 
 ```
 
-$ npm run seed                                                                                12:17:31
+$ npm run seed  
 
 > nextjs-application-template-s26@0.1.0 seed
 > npx tsx src/seed.ts
