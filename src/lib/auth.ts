@@ -9,7 +9,7 @@ declare module "next-auth" {
    */
   interface Session {
     user: {
-      /** The user's postal address. */
+      /** The user's role. */
       role: string
       /**
        * By default, TypeScript merges new interface properties and overwrites existing ones.
@@ -49,11 +49,12 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                 return null;
             }
 
-            console.log('User authenticated', { user }, 'Returning user object with id, email, and randomKey (role)');
+            // console.log('User authenticated', { user }, 'Returning user object with id, email, and role');
             return {
                 id: `${user.id}`,
                 email: user.email,
                 role: user.role,
+                name: user.role,
             };
         },
 
@@ -67,18 +68,18 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         //   newUser: '/auth/new-user'
     },
     callbacks: {
-        session: ({ session, token, user }) => {
-            console.log('Session Callback', { session, token })
+        session: ({ session, token }) => {
+            // console.log('Session Callback', { session, token, user })
             return {
         ...session,
         user: {
           ...session.user,
-          role: token.randomKey,
+          role: token.role,
         },
       }
         },
         jwt: ({ token, account }) => {
-            console.log('JWT Callback', { token, account })
+            // console.log('JWT Callback', { token, account })
             if (account) {
                 token.randomKey = account.randomKey;
                 token.id = account.id;
