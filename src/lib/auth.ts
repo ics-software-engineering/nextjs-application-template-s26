@@ -31,6 +31,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                 return null;
             }
 
+            console.log('User authenticated', { user }, 'Returning user object with id, email, and randomKey (role)');
             return {
                 id: `${user.id}`,
                 email: user.email,
