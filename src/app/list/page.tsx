@@ -1,4 +1,3 @@
-import { getToken } from 'next-auth/jwt';
 import { Col, Container, Row, Table } from 'react-bootstrap';
 import { prisma } from '@/lib/prisma';
 import StuffItem from '@/components/StuffItem';

@@ -1,7 +1,25 @@
-import NextAuth from 'next-auth';
+import NextAuth, { type DefaultSession } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { compare } from 'bcrypt';
 import { prisma } from '@/lib/prisma';
+
+declare module "next-auth" {
+  /**
+   * Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
+   */
+  interface Session {
+    user: {
+      /** The user's postal address. */
+      role: string
+      /**
+       * By default, TypeScript merges new interface properties and overwrites existing ones.
+       * In this case, the default session user properties will be overwritten,
+       * with the new ones defined above. To keep the default session user properties,
+       * you need to add them back into the newly declared interface.
+       */
+    } & DefaultSession["user"]
+  }
+}
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
     providers: [Credentials({
@@ -34,7 +52,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
             return {
                 id: `${user.id}`,
                 email: user.email,
-                randomKey: user.role,
+                role: user.role,
             };
         },
 
@@ -48,18 +66,23 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         //   newUser: '/auth/new-user'
     },
     callbacks: {
-      session: ({ session, token, user }) => {
-      // console.log('Session Callback', { session, token })
-      session.user = user;
-      return session;
-    },
-    jwt: ({ token, account }) => {
-      // console.log('JWT Callback', { token, user })
-      if (account) {
-        token.randomKey = account.randomKey;
-        token.id = account.id;
+        session: ({ session, token, user }) => {
+            console.log('Session Callback', { session, token })
+            return {
+        ...session,
+        user: {
+          ...session.user,
+          role: token.randomKey,
+        },
       }
-      return token;
+        },
+        jwt: ({ token, account }) => {
+            console.log('JWT Callback', { token, account })
+            if (account) {
+                token.randomKey = account.randomKey;
+                token.id = account.id;
+            }
+            return token;
+        },
     },
-  },
 });
